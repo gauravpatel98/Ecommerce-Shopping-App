@@ -1,22 +1,21 @@
 import db from '../config/db.js'
+const baseURL = 'http://localhost:7000'
 
 
 function addBrand(req,res){
     const {brand_name} = req.body;
     try {
-        const q1 = `insert into brand (brand_name) values ('${brand_name}')`;
-
+        const brand_image = req.file?req.file.filename:null;
+        const q1 = `insert into brand (brand_name,brand_image) values ('${brand_name}','${brand_image}')`;
         db.query(q1,(err,result)=>{
             if (err) throw err;
             res.status(201).send({msg:"Brand Added successfully",result:result,success:true})
         })
-
-        
     } catch (error) {
         res.status(500).send({msg:"Server Error",status:false})
     }
-
 }
+
 
 function getAllBrand(req,res){
     const {brand_name} = req.body;
@@ -25,13 +24,21 @@ function getAllBrand(req,res){
 
         db.query(q2,(err,result)=>{
             if (err) throw err;
-            res.status(201).send({msg:"All Brands Are Currently Showing",result:result,success:true})
+            if(result.length===0){
+            res.status(404).send({msg:"No brand found",success:false})
+            }
+            const brands = result.map((brand)=>({
+                ...brand, brand_image:brand.brand_image?
+                `${baseURL}/uploads/${brand.brand_image}`:null
+            }));
+            res.status(200).send({ brands: brands, success: true });
         })
-        
     } catch (error) {
         res.status(500).send({msg:"Server Error",status:false})
     }
 }
+
+
 
 function deleteBrand(req,res){
     const id = req.params.id;
@@ -51,6 +58,8 @@ function deleteBrand(req,res){
         res.status(500).send({msg:"Server Error"});
     }
 }
+
+
 function updateBrand(req,res){
     const id = req.params.id;
     const {brand_name} = req.body;

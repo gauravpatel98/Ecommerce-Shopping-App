@@ -1,4 +1,3 @@
-
 import express from 'express';
 import userController from '../controllers/userControllers.js'
 import middleware from '../middleware/auth.js'

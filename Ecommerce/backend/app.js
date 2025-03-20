@@ -5,6 +5,7 @@ import categoryRoutes from './routes/categoryRoutes.js'
 import brandRoutes from './routes/brandRoutes.js'
 import productRoutes from './routes/productRoutes.js'
 // import productRoutes from './routes/productRoutes'A
+import path from 'path'
 
 const app = express()
 const port = 7000
@@ -17,6 +18,8 @@ app.use('/user', userRoutes)
 app.use('/category', categoryRoutes)
 app.use('/brand', brandRoutes)
 app.use('/product', productRoutes)
+const __dirname = path.resolve()
+app.use('/uploads',express.static(path.join(__dirname,'uploads/')));
 // app.use('/product', productRoutes)
 
 

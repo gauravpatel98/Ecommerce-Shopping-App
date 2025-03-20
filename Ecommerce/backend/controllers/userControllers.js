@@ -8,7 +8,7 @@ function login(req, res) {
     try {
         db.query('SELECT * FROM user where email = ? and password = ?',[email, password], (err, result) => {
             if (err) throw err;
-            const payload = {id:result[0].id,role:result[0].Role}
+            const payload = {id:result[0].id,role:result[0].role,name:result[0].name}
             const token = jwt.sign(payload, 'batch40',{expiresIn:'1h'})
             res.status(200).send({msg:"Login Successfull" , token:token,success:true});
         });
@@ -21,8 +21,8 @@ function login(req, res) {
 function register(req, res) {
     try {
         // console.log(req.body);
-        const q1 = `insert into user (name, email, password,Role) 
-        values('${req.body.name}' ,'${req.body.email}','${req.body.password}','${req.body.Role}')`;
+        const q1 = `insert into user (name, email, password,role) 
+        values('${req.body.name}' ,'${req.body.email}','${req.body.password}','${req.body.role}')`;
     
         db.query(q1, (err, result) => {
           if (err) throw err;
